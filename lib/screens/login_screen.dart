@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-
 import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -16,7 +15,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _login() async {
     final response = await http.post(
-      Uri.parse('http://10.0.2.2:5000/login'),
+      Uri.parse('https://nethrakshana.onrender.com/login'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'UIN': _uinController.text,
@@ -90,16 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             SizedBox(height: 10),
-            GestureDetector(
-              onTap: () {
-                // Handle the "Forgot your UIN?" functionality
-                // You can navigate to a screen or show a dialog for recovery
-              },
-              child: Text(
-                "Forgot your UIN?",
-                style: TextStyle(color: Colors.blue),
-              ),
-            ),
+
           ],
         ),
       ),

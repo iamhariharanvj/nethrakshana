@@ -1,43 +1,120 @@
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:icare/common_widgets/Card.dart';
-import 'package:icare/screens/appointments_screen.dart';
 import 'package:icare/utils/theme/theme.dart';
-
+import 'package:flutter/services.dart';
+import 'package:dots_indicator/dots_indicator.dart';
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key});
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return  SingleChildScrollView(
       scrollDirection: Axis.vertical,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          ImageSlider(),
+          MyImageSlider(),
           SizedBox(height: 20),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
             child: Text("Explore", style: AppTheme.headline2),
           ),
-          SizedBox(height: 20),
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: EdgeInsets.all(16.0),
             child: RCard(
               url: "https://aravind.org/wp-content/uploads/2019/07/merge.jpg",
               title: "Book Eye Care Appointment",
               subtitle: "",
               text:
               "Take the first step towards healthier eyes. Schedule your eye care appointment today for personalized attention and expert care.",
+              route: "/book",
             ),
           ),
+          SizedBox(height: 20),
+          // Add more cards with generic information
+          Padding(
+            padding: EdgeInsets.all(16.0),
+            child: RCard(
+              url: "https://www.healthstatus.com/wp-content/uploads/2020/06/eye-optometrist-exam-ophthalmologist.jpg",
+              title: "Ophthalmology Overview",
+              subtitle: "",
+              text:
+              "Learn about the fundamentals of ophthalmology and how it plays a crucial role in maintaining eye health.",
+              route: "/overview",
+            ),
+          ),
+          SizedBox(height: 20),
+          // Add more cards with generic information
+          Padding(
+            padding: EdgeInsets.all(16.0),
+            child: RCard(
+              url: "https://c3a2x9v5.rocketcdn.me/wp-content/uploads/2020/05/womanThickFrameGlasses_xl-845x321.jpg",
+              title: "Common Eye Conditions",
+              subtitle: "",
+              text:
+              "Explore common eye conditions such as cataracts, glaucoma, and more. Understand their symptoms and treatments.",
+              route: "/eyeconditions",
+            ),
+          ),
+          // Add more cards with generic information
 
           SizedBox(height: 20),
         ],
       ),
+    );
+  }
+}
+
+class MyImageSlider extends StatefulWidget {
+  @override
+  _MyImageSliderState createState() => _MyImageSliderState();
+}
+
+class _MyImageSliderState extends State<MyImageSlider> {
+  final List<String> images = [
+    'https://www.birlaeye.org/images/aravind-eye-care.jpg',
+    'https://aravind.org/wp-content/uploads/2019/06/Phacoemulsification.jpg',
+    'https://aravind.org/wp-content/uploads/2019/06/Aurolab-1.jpg',
+    // Add more image paths as needed
+  ];
+
+  int currentIndex = 0;
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          height: 200, // Adjust the height as needed
+          child: PageView.builder(
+            itemCount: images.length,
+            onPageChanged: (index) {
+              setState(() {
+                currentIndex = index;
+              });
+            },
+            itemBuilder: (context, index) {
+              return Image.network(
+                images[index],
+                fit: BoxFit.cover,
+              );
+            },
+          ),
+        ),
+        DotsIndicator(
+          dotsCount: images.length,
+          position: currentIndex,
+          decorator: DotsDecorator(
+            size: const Size.square(8.0),
+            activeSize: const Size(20.0, 8.0),
+            activeShape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5.0),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -1,4 +1,14 @@
 {
   "homeIcon": "முகப்பு",
-  "appTitle": "நேத்ரக்ஷனா"
- }
+  "appTitle": "நேத்ரக்ஷனா",
+  "reportIcon": "ரிப்போர்ட்",
+  "appointmentIcon": "சந்திப்புகள்",
+  "profileIcon": "சுயவிவரம்",
+  "name": "பெயர்",
+  "uin": "தஅஎ",
+  "age": "வயது",
+  "gender": "பாலினம்",
+  "mobile": "கைபேசி எண்",
+  "address": "முகவரி"
+
+}

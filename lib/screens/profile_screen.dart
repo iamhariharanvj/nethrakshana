@@ -23,7 +23,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String uin = prefs.getString('UIN') ?? '';
 
-      final response = await http.get(Uri.parse('http://10.0.2.2:5000/user-details/$uin'));
+      final response = await http.get(Uri.parse('https://nethrakshana.onrender.com/user-details/$uin'));
 
       if (response.statusCode == 200) {
         print(response.body);
@@ -41,12 +41,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     }
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Profile'),
-      ),
       body: userDetails.isEmpty
           ? Center(child: CircularProgressIndicator())
           : Padding(
@@ -81,19 +80,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           Text(value),
         ],
       ),
-    );
-  }
-}
-
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: UserProfileScreen(),
     );
   }
 }

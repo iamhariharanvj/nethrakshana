@@ -3,6 +3,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:upi_india/upi_app.dart';
+import 'package:upi_india/upi_india.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -20,55 +22,75 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   final _formKey = GlobalKey<FormState>();
 
+  UpiIndia _upiIndia = UpiIndia();
+
+
+  Future<UpiResponse> initiateTransaction() async {
+    UpiApp app = UpiApp.paytm;
+    return _upiIndia.startTransaction(
+      app: app,
+      receiverUpiId: "johnthomasajs@okaxis",
+      receiverName: 'John Thomas A',
+      transactionRefId: 'UPITXREF0001',
+      transactionNote: 'Aravind Eye Care Patient Registration Fee.',
+      amount: 10.0,
+    );
+  }
+
+
+
   String _selectedGender = 'Male'; // Initial value for gender
+  double registrationFee = 10; // Set your registration fee
 
   Future<void> _register() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
-
-    final response = await http.post(
-      Uri.parse('http://10.0.2.2:5000/register'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'password': _passwordController.text,
-        'mobile': _mobileController.text,
-        'patientName': _patientNameController.text,
-        'age': int.tryParse(_ageController.text) ?? 0,
-        'gender': _genderController.text,
-        'address': _addressController.text,
-        'city': _cityController.text,
-      }),
-    );
-
-
-
-    if (response.statusCode == 201) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      final data = json.decode(response.body);
-      prefs.setString('UIN', data.uin);
-      await Navigator.pushReplacementNamed(
-        context,
-        "/home",
+    var res = await initiateTransaction();
+    print("Response Status: ");
+    print(res.status);
+    if(res.status !="failure") {
+      print("Working");
+      final response = await http.post(
+        Uri.parse('https://nethrakshana.onrender.com/register'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'password': _passwordController.text,
+          'mobile': _mobileController.text,
+          'patientName': _patientNameController.text,
+          'age': int.tryParse(_ageController.text) ?? 0,
+          'gender': _genderController.text,
+          'address': _addressController.text,
+          'city': _cityController.text,
+        }),
       );
-      print('User registered successfully');
-    } else {
-      // Handle registration failure
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Registration Failed'),
-            content: Text('Failed to register user'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
+      print(response.statusCode);
+      if (response.statusCode == 201) {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        final data = json.decode(response.body);
+
+        await prefs.setString('UIN', data.UIN);
+        print("Going to move");
+        Navigator.pushReplacementNamed(context, "/home");
+      } else {
+        // Handle registration failure
+        print(response.body);
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Registration Failed'),
+              content: Text('Failed to register user'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      }
     }
   }
 
@@ -86,13 +108,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+
                 TextFormField(
-                  controller: _passwordController,
-                  obscureText: true,
-                  decoration: InputDecoration(labelText: 'Password'),
+                  controller: _patientNameController,
+                  decoration: InputDecoration(labelText: 'Patient Name'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter a password';
+                      return 'Please enter patient name';
                     }
                     return null;
                   },
@@ -110,24 +132,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   },
                 ),
                 SizedBox(height: 10),
-                TextFormField(
-                  controller: _patientNameController,
-                  decoration: InputDecoration(labelText: 'Patient Name'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter patient name';
-                    }
-                    return null;
-                  },
-                ),
+              TextFormField(
+                controller: _passwordController,
+                obscureText: true,
+                decoration: InputDecoration(labelText: 'Password'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a password';
+                  }
+                  return null;
+                },
+              ),
                 SizedBox(height: 10),
-                // Age Slider
                 Text("Age"),
                 Slider(
                   value: int.tryParse(_ageController.text)?.toDouble() ?? 0,
+
                   onChanged: (value) {
                     setState(() {
-                      _ageController.text = value.toString();
+                      _ageController.text = value.toInt().toString();
                     });
                   },
                   min: 0,
@@ -136,7 +159,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   label: _ageController.text,
                 ),
                 SizedBox(height: 10),
-                // Gender Radio Buttons
                 Row(
                   children: [
                     Radio(
@@ -186,12 +208,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: _register,
-                  child: Text('Register'),
+                  child: Text('Register (Pay Rs.${registrationFee.toString()})'),
                 ),
                 SizedBox(height: 10),
                 TextButton(
                   onPressed: () {
-                    // Navigate to login screen
                     Navigator.pushReplacementNamed(context, "/login");
                   },
                   child: Text('Already registered? Login'),

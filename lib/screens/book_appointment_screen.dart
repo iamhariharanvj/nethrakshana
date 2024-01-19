@@ -81,7 +81,7 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
 
   Future<void> _selectLocation(BuildContext context) async {
     // Fetch the list of locations from the server
-    final String serverUrl = 'http://10.0.2.2:5000/locations';
+    final String serverUrl = 'https://nethrakshana.onrender.com/locations';
 
     try {
       final response = await http.get(Uri.parse(serverUrl));
@@ -123,7 +123,7 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
   }
 
   Future<void> _bookAppointment() async {
-    final String serverUrl = 'http://10.0.2.2:5000/book-appointment';
+    final String serverUrl = 'https://nethrakshana.onrender.com/book-appointment';
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String userUIN = prefs.getString('UIN') ?? '';

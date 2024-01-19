@@ -10,7 +10,7 @@ class AppointmentsScreen extends StatefulWidget {
 }
 
 class _AppointmentsScreenState extends State<AppointmentsScreen> {
-  List<dynamic> appointments = []; // List to store appointments
+  List<dynamic> appointments = [];
 
   @override
   void initState() {
@@ -23,7 +23,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String userUIN = prefs.getString('UIN') ?? '';
 
-    final String serverUrl = 'http://10.0.2.2:5000/user-appointments/'+userUIN; // Replace with the actual user UIN
+    final String serverUrl = 'https://nethrakshana.onrender.com/user-appointments/'+userUIN;
 
     try {
       final response = await http.get(Uri.parse(serverUrl));
@@ -88,9 +88,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Appointments'),
-      ),
+
       body: appointments.isEmpty
           ? Center(child: Text('No appointments'))
           : ListView.builder(

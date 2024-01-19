@@ -1,4 +1,14 @@
 {
   "homeIcon": "Home",
-  "appTitle": "Nethrakshana"
+  "appTitle": "Nethrakshana",
+  "reportIcon": "Reports",
+  "appointmentIcon": "Appointments",
+  "profileIcon": "Profile",
+  "name": "Name",
+  "uin": "UIN",
+  "age": "Age",
+  "gender": "Gender",
+  "mobile": "Mobile Number",
+  "address": "Address"
+
 }
